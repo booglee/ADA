@@ -1,0 +1,54 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Using your global variables (though local is usually safer!)
+int n = 10;
+
+void quickSort(int a[], int lb, int ub) {
+    if (lb < ub) {
+        int pivot = a[lb]; // Picking the first element as pivot
+        int i = lb;        // 'i' starts at the lower bound
+        int j = ub;        // 'j' starts at the upper bound
+        int temp;
+
+        while (i < j) {
+            // Move 'i' right: find an element greater than pivot
+            while (a[i] <= pivot && i < ub) {
+                i++;
+            }
+            // Move 'j' left: find an element smaller than pivot
+            while (a[j] > pivot) {
+                j--;
+            }
+
+            // If pointers haven't crossed, swap elements at i and j
+            if (i < j) {
+                temp = a[i];
+                a[i] = a[j];
+                a[j] = temp;
+            }
+        }
+
+        // Swap the pivot into its final correct position
+        temp = a[lb];
+        a[lb] = a[j];
+        a[j] = temp;
+
+        // Recursively sort the two halves
+        quickSort(a, lb, j - 1);
+        quickSort(a, j + 1, ub);
+    }
+}
+
+int main() {
+    int a[10] = {25, 10, 30, 15, 20, 2, 8, 3, 40, 12};
+    
+    quickSort(a, 0, 9);
+
+    printf("Sorted Array: ");
+    for (int k = 0; k < 10; k++) {
+        printf("%d ", a[k]);
+    }
+    
+    return 0;
+}
