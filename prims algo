@@ -1,0 +1,44 @@
+#include<stdio.h>
+#include<stdlib.h>
+#include<stdbool.h>
+#include<string.h>
+#define INF 999999999
+#define V 5
+int main(){
+    //prims algo
+    int x;
+    int y;
+    int i;
+    int j;
+    //initiaze the matrix for    V*V
+    int G[V][V]={{1,2,3,4,5},{3,4,5,1,3},{4,2,3,2,1},{3,5,3,1,2},{1,2,3,4,1}};
+    bool selected[V];
+    memset(selected, false, sizeof(selected));
+    selected[0]=true;
+    int no_of_edges=0;
+    printf("%s--%s","edges","weight\n");
+    while(no_of_edges<V-1){
+        int min=INF;
+        //FIND min by accessing every element in the graph
+        for( i=0;i<V;i++){
+            if(selected[i]){
+            
+            for(j=0;j<V;j++){
+                if(!selected[j]&& min>G[i][j]){
+                        min=G[i][j];
+                        x=i;
+                        y=j;
+                }
+            }
+                    
+            }
+        }
+        printf("%d - %d : %d\n", x, y, G[x][y]);
+        selected[y]=true;
+        
+        
+        no_of_edges++;
+       
+    } printf("time complexity: \n");
+        printf("O(V**3)");
+}
