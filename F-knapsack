@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+int main() {
+    int w[] = {1, 2, 3};
+    int p[] = {4, 5, 6};
+    int n = 3;
+    float c = 5.0; // Capacity
+    
+    // 1. Calculate Profit/Weight Ratio
+    float *r = malloc(sizeof(float) * n);
+    for (int i = 0; i < n; i++) {
+        r[i] = (float)p[i] / w[i]; // Cast to float to avoid integer division
+    }
+
+    // 2. Sort items by ratio descending (Bubble Sort)
+    for (int i = 0; i < n - 1; i++) {
+        for (int j = 0; j < n - i - 1; j++) {
+            if (r[j] < r[j + 1]) {
+                // Swap ratios
+                float tempR = r[j];
+                r[j] = r[j + 1];
+                r[j + 1] = tempR;
+
+                // Swap weights
+                int tempW = w[j];
+                w[j] = w[j + 1];
+                w[j + 1] = tempW;
+
+                // Swap profits
+                int tempP = p[j];
+                p[j] = p[j + 1];
+                p[j + 1] = tempP;
+            }
+        }
+    }
+
+    // 3. Fractional Knapsack Calculation
+    float total_profit = 0.0;
+    for (int i = 0; i < n; i++) {
+        if (w[i] <= c) {
+            // Take the whole item
+            c -= w[i];
+            total_profit += p[i];
+        } else {
+            // Take the fraction that fits
+            total_profit += p[i] * (c / w[i]);
+            break; 
+        }
+    }
+
+    printf("Total Profit: %.2f\n", total_profit);
+
+    free(r); // Don't forget to free allocated memory
+    return 0;
+}
