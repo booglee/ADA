@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdbool.h>
+#define ARRAY_SIZE 7
+
+void printArray(int a[], int n) {
+    for (int i = 0; i < n; i++) {
+        printf("%d ", a[i]);
+    }
+    printf("\n");
+}
+
+void johnsonTrotter(int a[], int dir[], int n) {
+    int m = 1;
+    printArray(a, n);
+
+    while (m < 7*6*5*4*3*2) { // 4! = 24 permutations
+        int mobile = -1;
+        int mobileIndex = -1;
+
+        // Step 1: Find largest mobile integer
+        for (int i = 0; i < n; i++) {
+            if (dir[i] == -1 && i > 0 && a[i] > a[i-1]) {
+                if (a[i] > mobile) { mobile = a[i]; mobileIndex = i; }
+            }
+            if (dir[i] == 1 && i < n-1 && a[i] > a[i+1]) {
+                if (a[i] > mobile) { mobile = a[i]; mobileIndex = i; }
+            }
+        }
+
+        if (mobile == -1) break; // no more mobile integers
+
+        // Step 2: Swap mobile integer in its direction
+        if (dir[mobileIndex] == -1) {
+            int temp = a[mobileIndex];
+            a[mobileIndex] = a[mobileIndex-1];
+            a[mobileIndex-1] = temp;
+
+            int tempDir = dir[mobileIndex];
+            dir[mobileIndex] = dir[mobileIndex-1];
+            dir[mobileIndex-1] = tempDir;
+
+            mobileIndex--; // update index
+        } else {
+            int temp = a[mobileIndex];
+            a[mobileIndex] = a[mobileIndex+1];
+            a[mobileIndex+1] = temp;
+
+            int tempDir = dir[mobileIndex];
+            dir[mobileIndex] = dir[mobileIndex+1];
+            dir[mobileIndex+1] = tempDir;
+
+            mobileIndex++; // update index
+        }
+
+        // Step 3: Reverse direction of all integers larger than mobile
+        for (int i = 0; i < n; i++) {
+            if (a[i] > mobile) dir[i] *= -1;
+        }
+
+        printArray(a, n);
+        m++;
+    }
+}
+
+int main() {
+    int a[] = {1, 2, 3, 4,5,6,7};
+    int dir[] = {-1, -1, -1, -1,-1,-1,-1,-1}; // -1 = left, 1 = right
+    johnsonTrotter(a, dir, ARRAY_SIZE);
+    return 0;
+}
