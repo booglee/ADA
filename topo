@@ -1,0 +1,51 @@
+#include <stdio.h>
+
+#define V 4 // Number of vertices
+
+int main() {
+    // 1. Define the graph using an Adjacency Matrix
+    // matrix[i][j] = 1 means there is an arrow from i to j
+    int graph[V][V] = {
+        {0, 1, 1, 0}, // 0 points to 1 and 2
+        {0, 0, 0, 1}, // 1 points to 3
+        {0, 0, 0, 1}, // 2 points to 3
+        {0, 0, 0, 0}  // 3 points to nothing
+    };
+
+    int indegree[V] = {0};
+    int visited[V] = {0};
+
+    // 2. Count how many arrows point to each node (indegree)
+    for (int i = 0; i < V; i++) {
+        for (int j = 0; j < V; j++) {
+            if (graph[i][j] == 1) {
+                indegree[j]++;
+            }
+        }
+    }
+
+    printf("Topological Sort Order:\n");
+
+    // 3. Find and print nodes with 0 arrows pointing to them
+    for (int count = 0; count < V; count++) {
+        for (int i = 0; i < V; i++) {
+            // Find a node that hasn't been printed yet and has 0 incoming arrows
+            if (indegree[i] == 0 && visited[i] == 0) {
+                printf("%d ", i);
+                visited[i] = 1; // Mark it as done
+
+                // "Remove" this node by reducing the incoming count of its neighbors
+                for (int j = 0; j < V; j++) {
+                    if (graph[i][j] == 1) {
+                        indegree[j]--;
+                    }
+                }
+                
+                break; // Move to the next slot in our sorted output
+            }
+        }
+    }
+    printf("\n");
+
+    return 0;
+}
