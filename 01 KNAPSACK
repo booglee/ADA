@@ -1,0 +1,56 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+#define N 5
+
+int MAX(int x, int y) {
+    return (x > y) ? x : y;
+}
+
+int main() {
+    int weights[N] = {1, 2, 3, 4, 5};
+    int profit[N] = {150, 100, 300, 500, 4};
+    int capacity = 5; // Reduced from 500 to 5 just to make the console output clean and readable!
+
+    // table[item_count + 1][capacity + 1]
+    // Dynamically allocated to safely handle larger capacities like 500 if needed
+    int (*table)[capacity + 1] = malloc(sizeof(int[N + 1][capacity + 1]));
+
+    if (table == NULL) {
+        printf("Memory allocation failed!\n");
+        return 1;
+    }
+
+    // Build the DP table
+    for (int i = 0; i <= N; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            // Base Case: If we have 0 items or knapsack capacity is 0
+            if (i == 0 || w == 0) {
+                table[i][w] = 0;
+            } 
+            // If the weight of the current item is LESS than or equal to the current capacity 'w'
+            else if (weights[i - 1] <= w) {
+                // Max of (Item Excluded, Item Included)
+                table[i][w] = MAX(table[i - 1][w], table[i - 1][w - weights[i - 1]] + profit[i - 1]);
+            } 
+            // If the item is too heavy for the current capacity 'w', exclude it
+            else {
+                table[i][w] = table[i - 1][w];
+            }
+        }
+    }
+
+    // Print the clean DP Table
+    printf("--- 0/1 Knapsack DP Table ---\n");
+    for (int i = 0; i <= N; i++) {
+        for (int w = 0; w <= capacity; w++) {
+            printf("%d\t", table[i][w]);
+        }
+        printf("\n"); // Move cleanly to the next row
+    }
+
+    printf("\nMaximum Profit: %d\n", table[N][capacity]);
+
+    free(table);
+    return 0;
+}
